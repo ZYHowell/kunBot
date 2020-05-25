@@ -2,18 +2,24 @@
 
 This is a bot to let you know what may be like in the next lecture of the probability course MS107, ACM class. 
 
-Not finish yet(welcome everyone to commit)
+##### How to use it
 
-todo: 
+Complete the teaching.config and run: 
 
-input
+```
+python wykBot.py
+```
 
-support appreciating Kolmogorov
+The config has four parts, each part has two attributes: type(should be "thm" or "def") and content. 
 
-plot expressions
+##### todo: 
 
-random silence for broken microphone
+* support appreciating Kolmogorov
 
-almost sure no time to teach the last knowledge
+* plot expressions
 
-talk in weChat group before and after class
+* random silence for broken microphone
+
+* almost sure no time to teach the last knowledge, and another kind of sigh
+
+* talk in weChat group before and after class

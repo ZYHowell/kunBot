@@ -1,9 +1,10 @@
 import random
+from configparser import ConfigParser
 
 def classPrehead(knowledges): 
-    string = "今天我们要讲的是这几个内容：首先是 " + knowledges[0] \
-            + "，然后我们要讲 " + knowledges[1] + "，然后是 " + knowledges[2] + \
-                "。如果有时间，我还想讲一下" + knowledges[3] + "，但我估计我应该是没有时间了。"
+    string = "今天我们要讲的是这几个内容：首先是 " + knowledges[0][1] \
+            + "，然后我们要讲 " + knowledges[1][1] + "，然后是 " + knowledges[2][1] + \
+                "。如果有时间，我还想讲一下" + knowledges[3][1] + "，但我估计我应该是没有时间了。"
     return string
 
 def trivialPattern1(knowledge): 
@@ -36,19 +37,25 @@ introduceWords = ["我们先讲", "接下来我们讲", "然后是", "最后我�
 # todo: modify input format to support appreciation for Kolmogorov
 # todo: plot expressions of Kun
 if __name__ == '__main__':
+    config = ConfigParser()
+    config.read('teaching.config', encoding='UTF-8')
     knowledges = []
-    # todo: input
+    for i in range(4): 
+        baseName = 'knowledge' + str(i + 1)
+        knowledges.append([config[baseName]['type'], config[baseName]['content']])
+        
     # todo: before class, talk in wechat group
     beginning = classPrehead(knowledges)
     print(beginning)
     #todo: add random silence for broken microphone
     currentStage = 0
     while currentStage < 4: 
-        print(introduceWords[currentStage] + knowledges[currentStage][0])
-        if knowledges[currentStage][1] == "proof": 
-            print(proofTrivial[random.randint(0, 2)](knowledges[currentStage][0]))
-        else: print(definitionTrivial[random.randint(0, 2)](knowledges[currentStage][0]))
+        print(introduceWords[currentStage] + knowledges[currentStage][1])
+        if knowledges[currentStage][0] == "thm": 
+            print(proofTrivial[random.randint(0, 2)](knowledges[currentStage][1]))
+        else: print(definitionTrivial[random.randint(0, 2)](knowledges[currentStage][1]))
         # randomly sigh
-        if currentStage > 0 and random.randint(0, 5) == 0: print(sigh())
+        if 3 > currentStage > 0 and random.randint(0, 2) == 0: print(sigh())
+        currentStage += 1
     # todo: add random(almost sure) "I have no time to teach this" for the last part
     # todo: after class, talk in wechat group
