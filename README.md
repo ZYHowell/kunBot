@@ -10,16 +10,12 @@ Complete the teaching.config and run:
 python wykBot.py
 ```
 
-The config has four parts, each part has two attributes: type(should be "thm" or "def") and content. 
+The config has four parts, each part has three attributes: type(should be "thm" or "def"), content and the worst case time to teach this knowledge(if you don't know how long teaching that will take, use the default). 
 
 ##### todo: 
 
 * support appreciating Kolmogorov
 
 * plot expressions
-
-* random silence for broken microphone
-
-* almost sure no time to teach the last knowledge, and another kind of sigh
 
 * talk in weChat group before and after class
