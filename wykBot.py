@@ -23,7 +23,8 @@ def teachDef2(definition):
     return definition + "这个定义的思想是老百姓都能理解的。"
 def teachDef3(definition):
     return "我一直说我教这门课就是为了带你们去看看人类历史上做出的非常美的一些东西，" + definition + \
-        "就是这样一个东西。我希望你们能把" + definition + "为什么这样定义研究清楚了。"
+        "就是这样一个东西。我希望你们能把" + definition + "为什么这样定义研究清楚了。" + \
+            "至于" + definition + "这个定义本身，是没有什么难度的。"
 def sigh(): 
     return "我看看我还有多少时间...我好像没有多少时间了。今天讲这个又花了太长时间。"
 def appreciate(mathmatician, award): 
@@ -36,26 +37,81 @@ introduceWords = ["我们先讲", "接下来我们讲", "然后是", "最后我�
 
 # todo: modify input format to support appreciation for Kolmogorov
 # todo: plot expressions of Kun
+class time: 
+    def __init__(self): 
+        self.hour = 10
+        self.minute = 0
+    def timePass(self, time): 
+        self.minute += time
+        if self.minute >= 60: 
+            self.hour += int(self.minute / 60)
+            self.minute %= 60
+    def noTimeAfter(self, time): 
+        minute = self.minute + time
+        hour = self.hour
+        if minute >= 60: 
+            hour += int(self.minute / 60)
+            minute %= 60
+        if hour > 11 or (hour == 11 and minute > 45): return True
+        return False 
+    def restTime(self): 
+        return 60 * (self.hour - 11) + 45 - self.minute
+    def noTime(self): 
+        if self.hour > 11 or (self.hour == 11 and self.minute > 40): return True
+        return False
+    def forceNoTime(self):
+        if self.hour > 11 or (self.hour == 11 and self.minute > 45): return True
+        return False
+    def time2str(self): 
+        return str(self.hour) + ':' + ('' if self.minute > 9 else '0') + str(self.minute)
+
+class Printer: 
+    def __init__(self): 
+        self.clock = time()
+    def print(self, words, moreTime=0): 
+        if self.clock.forceNoTime(): return
+
+        # todo: silence not only at the beginning, but in the middle
+        silence = random.randint(0, 10) == 0
+        length = len(words)
+        costTime = max(random.randint(int(length * 0.1), int(length * 0.5)) + moreTime, 5)
+        if silence: silenceRatio = float(random.randint(0, 5)) / 5.0
+        else: silenceRatio = 0
+        beginning = int(silenceRatio * len(words))
+
+        if self.clock.noTimeAfter(costTime): 
+            ratio = float(self.clock.restTime()) / float(costTime)
+            canPrint = int(ratio * len(words))
+            if silenceRatio < ratio: print(words[beginning:canPrint])
+        else: print(words[beginning:])
+        if silence: costTime += 2
+        self.clock.timePass(costTime)
+        print('now it is ' + self.clock.time2str())
+    def forceNoTime(self): 
+        return self.clock().forceNoTime()
+
 if __name__ == '__main__':
     config = ConfigParser()
     config.read('teaching.config', encoding='UTF-8')
     knowledges = []
+    zoom = Printer()
     for i in range(4): 
         baseName = 'knowledge' + str(i + 1)
         knowledges.append([config[baseName]['type'], config[baseName]['content']])
         
     # todo: before class, talk in wechat group
     beginning = classPrehead(knowledges)
-    print(beginning)
-    #todo: add random silence for broken microphone
+    zoom.print(beginning, -30)
     currentStage = 0
     while currentStage < 4: 
-        print(introduceWords[currentStage] + knowledges[currentStage][1])
+        zoom.print(introduceWords[currentStage] + knowledges[currentStage][1])
         if knowledges[currentStage][0] == "thm": 
-            print(proofTrivial[random.randint(0, 2)](knowledges[currentStage][1]))
-        else: print(definitionTrivial[random.randint(0, 2)](knowledges[currentStage][1]))
+            zoom.print(proofTrivial[random.randint(0, 2)](knowledges[currentStage][1]), 
+                        moreTime=10)
+        else: zoom.print(definitionTrivial[random.randint(0, 2)](knowledges[currentStage][1]), 
+                        moreTime=10)
         # randomly sigh
-        if 3 > currentStage > 0 and random.randint(0, 2) == 0: print(sigh())
+        if 3 > currentStage > 0 and random.randint(0, 2) == 0: zoom.print(sigh())
         currentStage += 1
     # todo: add random(almost sure) "I have no time to teach this" for the last part
     # todo: after class, talk in wechat group
